@@ -52,10 +52,46 @@ const ScheduleMeetingForm = ({
   const [attendees, setAttendees] = useState<string[]>([]);
   const [attendeeInput, setAttendeeInput] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{
+    title?: string;
+    duration?: string;
+    attendees?: string;
+  }>({});
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Title validation
+    if (title.length < 3) {
+      (newErrors as { title?: string }).title =
+        "Title must be at least 3 characters long";
+    } else if (title.length > 100) {
+      (newErrors as { title?: string }).title =
+        "Title must not exceed 100 characters";
+    }
+
+    // Duration validation
+    if (duration < 15) {
+      (newErrors as { duration?: string }).duration =
+        "Duration must be at least 15 minutes";
+    } else if (duration > 480) {
+      (newErrors as { duration?: string }).duration =
+        "Duration cannot exceed 8 hours";
+    }
+
+    // Attendees validation
+    if (attendees.length > 100) {
+      (newErrors as { attendees?: string }).attendees =
+        "Maximum 100 attendees allowed";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!validateForm()) return;
     if (!title || !startDate) return;
 
     const endDate = addMinutes(startDate, duration);
@@ -158,6 +194,8 @@ const ScheduleMeetingForm = ({
             onChange={(e) => setTitle(e.target.value)}
             disabled={disabled}
             required
+            error={!!errors.title}
+            helperText={errors.title}
             variant="outlined"
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -210,9 +248,11 @@ const ScheduleMeetingForm = ({
             type="number"
             value={duration}
             onChange={(e) => setDuration(Number(e.target.value))}
-            inputProps={{ min: 15, step: 15 }}
+            inputProps={{ min: 15, step: 15, max: 480 }}
             disabled={disabled}
             required
+            error={!!errors.duration}
+            helperText={errors.duration}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
