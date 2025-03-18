@@ -28,7 +28,7 @@ interface MeetingListProps {
 const MeetingList = ({ meetings }: MeetingListProps) => {
   if (meetings.length === 0) {
     return (
-      <Box sx={{ mt: 4, textAlign: "center" }}>
+      <Box sx={{ textAlign: "center" }}>
         <Typography variant="subtitle1" color="text.secondary">
           No meetings created yet. Create an instant meeting or schedule one for
           later.
@@ -36,13 +36,16 @@ const MeetingList = ({ meetings }: MeetingListProps) => {
       </Box>
     );
   }
-  console.log(meetings);
+
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box>
       <Typography variant="h6" gutterBottom>
         Your Meetings
       </Typography>
-      <Paper elevation={2}>
+      <Paper
+        elevation={2}
+        sx={{ maxHeight: { md: "calc(100vh - 240px)" }, overflow: "auto" }}
+      >
         <List>
           {meetings.map((meeting, index) => (
             <Box key={meeting.id}>

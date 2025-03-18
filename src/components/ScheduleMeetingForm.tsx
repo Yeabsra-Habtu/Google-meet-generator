@@ -26,7 +26,14 @@ const StyledDatePickerWrapper = styled(Box)(`
   .react-datepicker-popper {
     z-index: 9999 !important;
   }
+  input {
+    font-size: 0.65rem;
+  }
+  .MuiInputBase-input {
+    font-size: 0.65rem;
+  }
 `);
+
 // time icon
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
@@ -161,30 +168,13 @@ const ScheduleMeetingForm = ({
   };
 
   return (
-    <Paper
-      elevation={0}
+    <Box
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        mt: 2,
-        p: 3,
-        borderRadius: 2,
-        bgcolor: "background.paper",
-        boxShadow: (theme) =>
-          `0 8px 24px ${alpha(theme.palette.primary.main, 0.1)}`,
-        transition: "all 0.3s ease-in-out",
-        "&:hover": {
-          boxShadow: (theme) =>
-            `0 12px 28px ${alpha(theme.palette.primary.main, 0.15)}`,
-        },
+        width: "100%",
       }}
     >
-      <Typography
-        variant="h6"
-        sx={{ mb: 3, fontWeight: 500, color: "text.primary" }}
-      >
-        Schedule Your Meeting
-      </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <TextField
@@ -337,7 +327,7 @@ const ScheduleMeetingForm = ({
           </Button>
         </Grid>
       </Grid>
-    </Paper>
+    </Box>
   );
 };
 

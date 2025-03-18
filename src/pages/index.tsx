@@ -23,6 +23,8 @@ import {
   Avatar,
   CircularProgress,
   alpha,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import InstantMeetingButton from "@/components/InstantMeetingButton";
 import ScheduleMeetingForm from "@/components/ScheduleMeetingForm";
@@ -36,6 +38,7 @@ export default function Home() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const meetings = useSelector(selectMeetings);
   const isLoading = useSelector(selectMeetingLoading);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     if (session?.user) {
@@ -254,39 +257,68 @@ export default function Home() {
               </Box>
             </Box>
 
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Create a Meeting
-              </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                gap: 3,
+              }}
+            >
+              <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 60%" } }}>
+                <Paper elevation={3} sx={{ p: 3 }}>
+                  <Typography variant="h6" gutterBottom>
+                    Create a Meeting
+                  </Typography>
 
-              <InstantMeetingButton
-                onCreateInstantMeeting={handleCreateInstantMeeting}
-                disabled={isLoading}
-              />
+                  <Tabs
+                    value={activeTab}
+                    onChange={(_, newValue) => setActiveTab(newValue)}
+                    variant="fullWidth"
+                    sx={{
+                      borderBottom: 1,
+                      borderColor: "divider",
+                      bgcolor: (theme) =>
+                        alpha(theme.palette.primary.main, 0.04),
+                    }}
+                  >
+                    <Tab label="Instant Meeting" />
+                    <Tab label="Schedule Meeting" />
+                  </Tabs>
 
-              <Divider sx={{ my: 3 }}>
-                <Typography variant="body2" color="text.secondary">
-                  OR
-                </Typography>
-              </Divider>
+                  <Box sx={{ mt: 3 }}>
+                    {activeTab === 0 ? (
+                      <InstantMeetingButton
+                        onCreateInstantMeeting={handleCreateInstantMeeting}
+                        disabled={isLoading}
+                      />
+                    ) : (
+                      <ScheduleMeetingForm
+                        onScheduleMeeting={handleScheduleMeeting}
+                        disabled={isLoading}
+                      />
+                    )}
+                  </Box>
+                </Paper>
 
-              <Typography variant="subtitle1" gutterBottom>
-                Schedule for later
-              </Typography>
-
-              <ScheduleMeetingForm
-                onScheduleMeeting={handleScheduleMeeting}
-                disabled={isLoading}
-              />
-            </Paper>
-
-            {isLoading && (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <CircularProgress />
+                {isLoading && (
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", mt: 4 }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                )}
               </Box>
-            )}
 
-            <MeetingList meetings={meetings} />
+              <Box
+                sx={{
+                  flex: { xs: "1 1 100%", md: "1 1 40%" },
+                  height: { md: "calc(100vh - 200px)" },
+                  overflow: "auto",
+                }}
+              >
+                <MeetingList meetings={meetings} />
+              </Box>
+            </Box>
           </Box>
         )}
       </Box>
