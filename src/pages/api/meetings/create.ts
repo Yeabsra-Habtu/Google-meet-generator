@@ -20,6 +20,27 @@ export default async function handler(
     const { title, startDateTime, endDateTime, isInstant, attendees } =
       req.body;
 
+    if (isInstant) {
+      // For instant meetings, do not create a calendar event
+      const generatedId = `instant-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2, 11)}`;
+      const generatedLink = `https://meet.google.com/${Math.random()
+        .toString(36)
+        .substring(2, 11)}`;
+      const meetingData = {
+        id: generatedId,
+        link: generatedLink,
+        title: title || "Instant Meeting",
+        dateTime: null,
+        isInstant: true,
+        createdAt: new Date().toISOString(),
+        attendees: attendees && attendees.length > 0 ? attendees : undefined,
+        duration: null,
+      };
+      return res.status(200).json(meetingData);
+    }
+
     // Configure OAuth2 client
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
